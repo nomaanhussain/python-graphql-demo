@@ -1,0 +1,52 @@
+schema {
+    query: Query
+}
+
+
+type Port { id: String
+  name: String
+  port: Int
+  protocol: String
+  type: String }
+
+type Geo { id: String name: String type: String }
+
+type DeviceDetails { cpuCores: String
+  cpuType: String
+  memoryInMB: String
+  storageInGB: String }
+
+type Nodes { domain: String
+  id: String
+  ip: String
+  ipGateway: String
+  ip_scope: String
+  l_incomingConn: Int
+  l_incomingData: Int
+  l_outgoingConn: Int
+  l_outgoingData: Int
+  macAddress: String
+  networkGroup: String
+  nodeName: String
+  objectType: String
+  os: String
+  status: String
+  Port: Port
+  geo: Geo
+  deviceDetails: DeviceDetails }
+
+
+type Links { CurrentTafficSize: Int
+  color: String
+  source: String
+  target: String
+  trafficType: String
+  value: Int
+  absolutePath: [String ] }
+
+
+type AutoGraph {
+    links: [ Links ]
+    nodes : [ Nodes ]
+}
+
