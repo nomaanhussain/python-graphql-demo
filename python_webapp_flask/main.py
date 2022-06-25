@@ -16,6 +16,9 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 
+from .graphQL import module as graphql_module
+app.register_blueprint(graphql_module)
+
 @app.route('/', methods=['GET'])
 @cross_origin()
 def home():
