@@ -2,6 +2,8 @@ import html
 import requests
 import datetime
 from netaddr import IPNetwork
+from colour import Color
+
 
 
 
@@ -161,3 +163,41 @@ def process_auto_graph_data(response_data, live_data, timeframe=10000):
         del link['value']
 
     return response_data
+
+def transf_to_interval(value, max_value, a=1, b=100):
+    if max_value == 0:
+        return a
+    return int(a + value / max_value * (b-a))
+
+def colour_gradient(colour1, colour2, range):
+    start = Color(colour1)
+    colours = list(start.range_to(Color(colour2), range))
+
+    return colours
+
+
+
+def process_live_data(response_data, live_data, timeframe=10000):
+    response_data, max_udp_length = process_data(response_data, live_data, timeframe)
+
+    for link in response_data["links"]:
+        if link["value"] > 0:
+            link["CurrentTafficSize"] = link["value"]
+            link["value"] = transf_to_interval(link["value"], max_udp_length)
+            link['trafficType'] = 'TCP'
+            #TODO:there's multiple types of traffic for IP1:IP2 connection ???
+            link['absolutePath'] = [link['source'], link['target']]
+
+    for el in response_data["links"]:
+        if el["value"] < 50:
+            colour_gradient_list = colour_gradient("#008000", "#ff0", 50)
+            el["color"] = colour_gradient_list[el["value"]].hex
+        else:
+            colour_gradient_list = colour_gradient("#ff0", "#f00", 50)
+            el["color"] = colour_gradient_list[el["value"] - 1 - 50].hex
+
+    return response_data
+
+
+def live_graph_generate_nodes(nodes, json_file):
+    return auto_graph_generate_nodes(nodes, json_file)

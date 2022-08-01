@@ -14,6 +14,8 @@ module = Blueprint('index',
 
 query = ObjectType("Query")
 query.set_field("autograph", queries.resolve_autograph)
+query.set_field("livegraph", queries.resolve_livegraph)
+
 
 
 type_defs = load_schema_from_path("graphQL_schema")
